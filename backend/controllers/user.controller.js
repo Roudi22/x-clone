@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-
+import Notification from "../models/notification.model.js";
 export const getUserProfile = async (req, res) => {
     try {
         const user = await User.findOne({ username: req.params.username }).select("-password");
@@ -30,8 +30,27 @@ export const followUnfollowUser = async (req, res) => {
         } else {
             await user.updateOne({ $push: { followers: req.user._id } });
             await req.user.updateOne({ $push: { following: req.params.id } });
+            // send notification
+            const newNotification = new Notification({
+                from: req.user._id,
+                to: req.params.id,
+                type: "follow",
+            });
+            await newNotification.save();
+            // TODO: return the id of the user as a response
             res.status(200).json({ message: "Followed successfully" });
         }
+    } catch (error) {
+        console.error(`Error: ${error.message}`);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+export const getSuggestedUsers = async (req, res) => {
+    try {
+        const currentUser = await User.findById(req.user._id);
+        const users = await User.find({ _id: { $nin: [...currentUser.following, req.user._id] } }).select("-password").limit(5); // Get 5 users who are not followed by the current user
+        res.status(200).json({ message: "Suggested users fetched successfully", users });
     } catch (error) {
         console.error(`Error: ${error.message}`);
         res.status(500).json({ message: "Server Error" });
