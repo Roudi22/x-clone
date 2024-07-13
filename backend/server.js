@@ -2,13 +2,18 @@ import express from 'express';
 
 import authRoutes from './routes/auth.routes.js';
 import usersRoutes from './routes/users.routes.js';
-
+import { v2 as cloudinary } from 'cloudinary';
 import { connectMongoDB } from './db/connectMongoDB.js';
 
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 
 dotenv.config();
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const app = express();
 
