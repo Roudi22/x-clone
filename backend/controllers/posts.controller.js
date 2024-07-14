@@ -89,10 +89,15 @@ export const likeUnlikePost = async (req, res) => {
     if (isLiked) {
       // Unlike the post
       await Post.findByIdAndUpdate(id, { $pull: { likes: currentUserId } });
+      await User.updateOne(
+        { _id: post.user },
+        { $pull: { likedPosts: id } }
+      );
       res.status(200).json({ message: "Post unliked successfully" });
     } else {
       // Like the post
       post.likes.push(currentUserId);
+        await User.updateOne( { _id: post.user }, { $push: { likedPosts: id } } );
       await post.save();
       // Send notification to the post owner
       const postOwner = await User.findById(post.user);
