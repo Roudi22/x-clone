@@ -2,6 +2,7 @@ import express from 'express';
 
 import authRoutes from './routes/auth.routes.js';
 import usersRoutes from './routes/users.routes.js';
+import postsRoutes from './routes/posts.routes.js';
 import { v2 as cloudinary } from 'cloudinary';
 import { connectMongoDB } from './db/connectMongoDB.js';
 
@@ -25,6 +26,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
+app.use("/api/posts", postsRoutes);
 
 app.listen(PORT, () => {
   console.log('Server is running on port', PORT);
