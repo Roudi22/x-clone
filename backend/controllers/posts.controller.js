@@ -111,3 +111,25 @@ export const likeUnlikePost = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const getPosts = async (req, res) => {
+  try {
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "user",
+        select: "-password",
+      })
+      .populate({
+        path: "comments.user",
+        select: "-password",
+      });
+    if (posts.length === 0) {
+      return res.status(200).json([]);
+    }
+    res.json({ counts: posts.length, posts });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
