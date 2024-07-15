@@ -81,23 +81,22 @@ export const likeUnlikePost = async (req, res) => {
   try {
     const { id } = req.params;
     const currentUserId = req.user._id.toString();
+    const user = await User.findById(currentUserId);
     const post = await Post.findById(id);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
     const isLiked = post.likes.includes(currentUserId);
+    
     if (isLiked) {
       // Unlike the post
-      await Post.findByIdAndUpdate(id, { $pull: { likes: currentUserId } });
-      await User.updateOne(
-        { _id: post.user },
-        { $pull: { likedPosts: id } }
-      );
+      await Post.updateOne({_id: id}, { $pull: { likes: currentUserId } });
+      await User.updateOne({ _id: currentUserId }, { $pull: { likedPosts: id } });
       res.status(200).json({ message: "Post unliked successfully" });
     } else {
       // Like the post
       post.likes.push(currentUserId);
-        await User.updateOne( { _id: post.user }, { $push: { likedPosts: id } } );
+      await User.updateOne({ _id: currentUserId }, { $push: { likedPosts: id } });
       await post.save();
       // Send notification to the post owner
       const postOwner = await User.findById(post.user);
@@ -133,6 +132,26 @@ export const getPosts = async (req, res) => {
       return res.status(200).json([]);
     }
     res.json({ counts: posts.length, posts });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getLikedPosts = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const likedPosts = await Post.find({ _id: { $in: user.likedPosts } })
+      .populate({ path: "user", select: "-password" })
+      .populate({ path: "comments.user", select: "-password" });
+    if (likedPosts.length === 0) { 
+      return res.status(200).json([]);
+    }
+    res.status(200).json({ counts: likedPosts.length, likedPosts });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
