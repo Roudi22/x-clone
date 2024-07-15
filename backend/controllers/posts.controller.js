@@ -178,3 +178,24 @@ export const getFollowingPosts = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const getUserPosts = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const userPosts = await Post.find({ user: user._id })
+      .sort({ createdAt: -1 })
+      .populate({ path: "user", select: "-password" })
+      .populate({ path: "comments.user", select: "-password" });
+    if (userPosts.length === 0) {
+      return res.status(200).json([]);
+    }
+    res.status(200).json({ counts: userPosts.length, userPosts });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
