@@ -1,9 +1,19 @@
-import express from 'express';
-import { protectRoute } from '../middlewares/protectRoute.js';
-import { commentOnPost, createPost, deletePost, getFollowingPosts, getLikedPosts, getPosts, likeUnlikePost } from '../controllers/posts.controller.js';
+import express from "express";
+import { protectRoute } from "../middlewares/protectRoute.js";
+import {
+  commentOnPost,
+  createPost,
+  deletePost,
+  getFollowingPosts,
+  getLikedPosts,
+  getPosts,
+  getUserPosts,
+  likeUnlikePost,
+} from "../controllers/posts.controller.js";
 
 const router = express.Router();
 
+router.get("/user-posts/:username", protectRoute, getUserPosts);
 router.get("/following-posts", protectRoute, getFollowingPosts);
 router.get("/liked-posts/:id", protectRoute, getLikedPosts);
 router.get("/get-posts", protectRoute, getPosts);
