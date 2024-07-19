@@ -165,14 +165,16 @@ export const getFollowingPosts = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    const followingPosts = await Post.find({ user: { $in: user.following } }) // get posts of the users that the current user is following
+    const posts = await Post.find({ user: { $in: user.following } }) // get posts of the users that the current user is following
       .sort({ createdAt: -1 })
       .populate({ path: "user", select: "-password" })
       .populate({ path: "comments.user", select: "-password" });
-    if (followingPosts.length === 0) {
-      return res.status(200).json([]);
+    if (posts.length === 0) {
+      console.log(posts);
+      return res.status(200).json({posts: []});
     }
-    res.status(200).json({ counts: followingPosts.length, followingPosts });
+    
+    res.status(200).json({ counts: posts.length, posts });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
