@@ -5,20 +5,20 @@ import Notification from "../models/notification.model.js";
 export const createPost = async (req, res) => {
   try {
     const { text } = req.body;
-    let { image } = req.body;
+    let { img } = req.body;
     const currentUserId = req.user._id.toString();
     const user = await User.findById(currentUserId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    if (!text && !image) {
-      return res.status(400).json({ message: "Text or image is required" });
+    if (!text && !img) {
+      return res.status(400).json({ message: "Text or img is required" });
     }
-    if (image) {
-      const uploadedResponse = await cloudinary.uploader.upload(image);
-      image = uploadedResponse.secure_url;
+    if (img) {
+      const uploadedResponse = await cloudinary.uploader.upload(img);
+      img = uploadedResponse.secure_url;
     }
-    const newPost = new Post({ text, image, user: currentUserId });
+    const newPost = new Post({ text, img, user: currentUserId });
     await newPost.save();
     res
       .status(201)
