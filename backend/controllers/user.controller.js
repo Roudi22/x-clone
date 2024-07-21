@@ -19,10 +19,10 @@ export const followUnfollowUser = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ error: "User not found" });
         }
         if (req.user._id.toString() === req.params.id) {
-            return res.status(400).json({ message: "You cannot follow/unfollow yourself" });
+            return res.status(400).json({ error: "You cannot follow/unfollow yourself" });
         }
         if (user.followers.includes(req.user._id)) {
             // Unfollow the user
