@@ -51,10 +51,21 @@ const Post = ({ post }) => {
 				throw new Error(error);
 			}
 		},
-		onSuccess: () => {
+		onSuccess: (updatedLikes) => {
 			toast.success("Post liked successfully");
 			// invalidate the query to refetch the data
-			queryClient.invalidateQueries({ queryKey: ["posts"] });
+			// update the cache to reflect the new like
+			queryClient.setQueryData(["posts"], (oldData) => {
+				console.log("olddata",oldData);
+				return oldData.map((oldPost) => {
+					console.log("oldPost",oldPost);
+					if (oldPost._id === post._id) {
+						return { ...oldPost, likes: updatedLikes };
+					}
+					return oldPost;
+				});
+				
+			});
 		},
 		onError: (error) => { 
 			toast.error(error.message);
@@ -201,6 +212,7 @@ const Post = ({ post }) => {
 										isLiked ? "text-pink-500" : "text-slate-500"
 									}`}
 								>
+									{console.log("post likes",post.likes)}
 									{post.likes.length}
 								</span>
 							</div>
