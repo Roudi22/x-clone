@@ -34,8 +34,34 @@ const Post = ({ post }) => {
 			queryClient.invalidateQueries({ queryKey: ["posts"] });
 		},
 	});
+
+	const { mutate:likePost, isPending:isLiking, isError:likeError, error:likeErrorMessage } = useMutation({
+		mutationFn: async () => {
+			try {
+				const res = await fetch(`/api/posts/like-post/${post._id}`, {
+					method: "POST"
+				});
+				const data = await res.json();
+				if (!res.ok) {
+					throw new Error(data.message);
+				}
+				return data;
+			} catch (error) {
+				console.log(error);
+				throw new Error(error);
+			}
+		},
+		onSuccess: () => {
+			toast.success("Post liked successfully");
+			// invalidate the query to refetch the data
+			queryClient.invalidateQueries({ queryKey: ["posts"] });
+		},
+		onError: (error) => { 
+			toast.error(error.message);
+		},
+	});
 	const postOwner = post.user;
-	const isLiked = false;
+	const isLiked = post.likes.includes(authUser._id);
 
 	const isMyPost = authUser._id === post.user._id;
 
@@ -51,7 +77,12 @@ const Post = ({ post }) => {
 		e.preventDefault();
 	};
 
-	const handleLikePost = () => {};
+	const handleLikePost = () => {
+		if (isLiking) {
+			return;
+		}
+		likePost();
+	};
 
 	return (
 		<>
@@ -143,7 +174,7 @@ const Post = ({ post }) => {
 										/>
 										<button className='btn btn-primary rounded-full btn-sm text-white px-4'>
 											{isCommenting ? (
-												<span className='loading loading-spinner loading-md'></span>
+												<LoadingSpinner size='md' />
 											) : (
 												"Post"
 											)}
@@ -159,14 +190,15 @@ const Post = ({ post }) => {
 								<span className='text-sm text-slate-500 group-hover:text-green-500'>0</span>
 							</div>
 							<div className='flex gap-1 items-center group cursor-pointer' onClick={handleLikePost}>
-								{!isLiked && (
+								{isLiking && <LoadingSpinner size='sm' />}
+								{!isLiked && !isLiking && (
 									<FaRegHeart className='w-4 h-4 cursor-pointer text-slate-500 group-hover:text-pink-500' />
 								)}
-								{isLiked && <FaRegHeart className='w-4 h-4 cursor-pointer text-pink-500 ' />}
-
+								{isLiked && !isLiking && <FaRegHeart className='w-4 h-4 cursor-pointer text-pink-500 ' />}
+								{likeError && <span className='text-red-500'>{likeErrorMessage}</span>}
 								<span
-									className={`text-sm text-slate-500 group-hover:text-pink-500 ${
-										isLiked ? "text-pink-500" : ""
+									className={`text-sm  group-hover:text-pink-500 ${
+										isLiked ? "text-pink-500" : "text-slate-500"
 									}`}
 								>
 									{post.likes.length}
