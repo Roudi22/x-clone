@@ -61,11 +61,14 @@ export const commentOnPost = async (req, res) => {
     const currentUserId = req.user._id.toString();
     const user = await User.findById(currentUserId);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ error: "User not found" });
     }
     const post = await Post.findById(id);
     if (!post) {
-      return res.status(404).json({ message: "Post not found" });
+      return res.status(404).json({ error: "Post not found" });
+    }
+    if (!text) {
+      return res.status(400).json({ error: "Text is required" });
     }
     const newComment = { user: currentUserId, text };
     post.comments.push(newComment);
