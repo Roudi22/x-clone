@@ -9,7 +9,7 @@ export const getNotifications = async (req, res) => {
             return res.status(200).json([]);
             }
             await Notification.updateMany({ to: req.user._id }, { read: true });
-            res.status(200).json({ counts: notifications.length, notifications });
+            res.status(200).json( notifications);
         } catch (error) {
             console.log(error);
             res.status(500).json({ message: "Internal server error" });

@@ -157,7 +157,7 @@ export const getLikedPosts = async (req, res) => {
     if (likedPosts.length === 0) { 
       return res.status(200).json([]);
     }
-    res.status(200).json({ counts: likedPosts.length, likedPosts });
+    res.status(200).json( likedPosts );
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
@@ -201,7 +201,7 @@ export const getUserPosts = async (req, res) => {
     if (userPosts.length === 0) {
       return res.status(200).json([]);
     }
-    res.status(200).json({ counts: userPosts.length, userPosts });
+    res.status(200).json( userPosts );
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error", error: error.message });
