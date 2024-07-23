@@ -44,7 +44,7 @@ const {data:authUser, isLoading} = useQuery({
         <Route path='/' element={ authUser ? <Home /> : <Navigate to="/login"/>} />
         <Route path='/login' element={!authUser ? <LogInPage /> : <Navigate to="/"/> } />
         <Route path='/signup' element={!authUser ? <SignUpPage /> : <Navigate to={"/"}/> } />
-        <Route path='/notification' element={authUser ? <NotificationPage /> : <Navigate to={"/login"}/> } />
+        <Route path='/notifications' element={authUser ? <NotificationPage /> : <Navigate to={"/login"}/> } />
         <Route path='/profile/:username' element={authUser ? <ProfilePage /> : <Navigate to={"/login"}/> } />
         </Routes>
         {authUser && <RightPanel/>}
