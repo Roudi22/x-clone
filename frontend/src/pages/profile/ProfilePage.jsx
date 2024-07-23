@@ -12,8 +12,11 @@ import { IoCalendarOutline } from "react-icons/io5";
 import { FaLink } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { useParams } from "react-router-dom";
-import { useQuery, QueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { formatMemberSinceDate } from "../../utils/date";
+import useFollow from "../../hooks/useFollow";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import useUpdateUserProfile from "../../hooks/useUpdateUserProfile";
 const ProfilePage = () => {
 	const [coverImg, setCoverImg] = useState(null);
 	const [profileImg, setProfileImg] = useState(null);
@@ -21,9 +24,9 @@ const ProfilePage = () => {
 	const { username } = useParams();
 	const coverImgRef = useRef(null);
 	const profileImgRef = useRef(null);
-
+	const { followUser, isPending } = useFollow();
+	const { data:authuser} = useQuery({ queryKey: ["authUser"] });
 	
-	const isMyProfile = true;
 	const { data:user, isLoading, refetch, isRefetching } = useQuery({
 		queryKey: ["userProfile"],
 		queryFn: async () => {
@@ -42,6 +45,10 @@ const ProfilePage = () => {
 		},
 	});
 	const memberSinceDate = formatMemberSinceDate(user?.createdAt);
+	const isMyProfile = authuser?._id === user?._id;
+
+
+	const { updateProfile, isUpdatingProfile } = useUpdateUserProfile({ coverImg, profileImg });
 	useEffect(() => {
 		refetch();
 	}, [username, refetch])
@@ -122,21 +129,28 @@ const ProfilePage = () => {
 								</div>
 							</div>
 							<div className='flex justify-end px-4 mt-5'>
-								{isMyProfile && <EditProfileModal />}
+								{isMyProfile && <EditProfileModal authuser={authuser}/>}
 								{!isMyProfile && (
 									<button
 										className='btn btn-outline rounded-full btn-sm'
-										onClick={() => alert("Followed successfully")}
+										onClick={() => followUser(user._id)}
 									>
-										Follow
+										{ isPending ? <LoadingSpinner size="sm" /> : user?.followers.includes(authuser?._id) ? "Unfollow" : "Follow"}
 									</button>
 								)}
 								{(coverImg || profileImg) && (
 									<button
 										className='btn btn-primary rounded-full btn-sm text-white px-4 ml-2'
-										onClick={() => alert("Profile updated successfully")}
+										onClick={ async () => {
+											await updateProfile({
+												profileImg,
+												coverImg,
+											})
+											setCoverImg(null)
+											setProfileImg(null)
+										}}
 									>
-										Update
+										{isUpdatingProfile ? "Updating..." : "Update"}
 									</button>
 								)}
 							</div>
