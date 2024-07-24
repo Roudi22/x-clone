@@ -15,7 +15,7 @@ const RightPanel = () => {
 				if (!res.ok) {
 					throw new Error(data.message);
 				}
-				
+				console.log("suggested users",data);
 				return data;
 			} catch (error) {
 				

@@ -16,6 +16,7 @@ const NotificationPage = () => {
 			try {
 				const res = await fetch("/api/notifications");
 				const data = await res.json();
+				console.log("notifications",data);
 				return data;
 			} catch (error) {
 				throw error;
@@ -52,7 +53,7 @@ const NotificationPage = () => {
 					<p className='font-bold'>Notifications</p>
 					<div className='dropdown '>
 						<div tabIndex={0} role='button' className='m-1'>
-							<IoSettingsOutline className='w-4' />
+							{notifications?.length > 0 && <IoSettingsOutline className='w-4' />}
 						</div>
 						<ul
 							tabIndex={0}

@@ -13,7 +13,7 @@ const EditProfileModal = ({authuser}) => {
 		currentPassword: "",
 	});
 		
-	const { updateProfile , isUpdatingProfile } = useUpdateUserProfile();
+	const { updateProfile , isUpdatingProfile, isError, error } = useUpdateUserProfile();
 	const handleInputChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
@@ -101,6 +101,7 @@ const EditProfileModal = ({authuser}) => {
 								onChange={handleInputChange}
 							/>
 						</div>
+						{isError && <p className='text-red-500'>{error.message}</p>}
 						<input
 							type='text'
 							placeholder='Link'

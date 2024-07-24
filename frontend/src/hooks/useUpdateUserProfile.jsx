@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const useUpdateUserProfile = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-	const { mutateAsync:updateProfile, isPending:isUpdatingProfile } = useMutation({
+	const { mutateAsync:updateProfile, isPending:isUpdatingProfile, isError, error } = useMutation({
 		mutationFn: async (formData) => {
 			try {
 				const res = await fetch(`/api/users/update`, {
@@ -21,7 +21,7 @@ const useUpdateUserProfile = () => {
 				
 				return data;
 			} catch (error) {
-				throw new Error(error.message);
+				throw new Error(error);
 			}
 		},
 		onSuccess: (data) => { 
@@ -31,11 +31,8 @@ const useUpdateUserProfile = () => {
 			)
 			navigate(`/profile/${data.user.username}`);
 		},
-		onError: (error) => {
-			toast.error(error.message);
-		},
 	});
-    return { updateProfile, isUpdatingProfile };
+    return { updateProfile, isUpdatingProfile, isError, error };
 };
 
 export default useUpdateUserProfile;
