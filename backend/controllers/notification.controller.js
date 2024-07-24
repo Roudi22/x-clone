@@ -11,7 +11,6 @@ export const getNotifications = async (req, res) => {
             await Notification.updateMany({ to: req.user._id }, { read: true });
             res.status(200).json( notifications);
         } catch (error) {
-            console.log(error);
             res.status(500).json({ message: "Internal server error" });
         }
 };
@@ -22,7 +21,6 @@ export const deleteNotifications = async (req, res) => {
         await Notification.deleteMany({ to: userId });
         res.status(200).json({ message: "Notifications deleted successfully" });
     } catch (error) {
-        console.log(error);
         res.status(500).json({ message: "Internal server error" });
         
     }

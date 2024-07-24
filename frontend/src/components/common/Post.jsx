@@ -25,7 +25,7 @@ const Post = ({ post }) => {
 				}
 				return data;
 			} catch (error) {
-				console.log(error);
+				
 				throw new Error(error);
 			}
 		},
@@ -48,7 +48,7 @@ const Post = ({ post }) => {
 				}
 				return data;
 			} catch (error) {
-				console.log(error);
+				
 				throw new Error(error);
 			}
 		},
@@ -57,9 +57,9 @@ const Post = ({ post }) => {
 			// invalidate the query to refetch the data
 			// update the cache to reflect the new like
 			queryClient.setQueryData(["posts"], (oldData) => {
-				console.log("olddata",oldData);
+				
 				return oldData.map((oldPost) => {
-					console.log("oldPost",oldPost);
+					
 					if (oldPost._id === post._id) {
 						return { ...oldPost, likes: updatedLikes };
 					}
@@ -75,6 +75,7 @@ const Post = ({ post }) => {
 	
 	const { mutate:commentOnPost, isPending:isCommenting, isError:commentError, error:commentErrorMessage } = useMutation({
 		mutationFn: async () => {
+			// eslint-disable-next-line no-useless-catch
 			try {
 				const res = await fetch(`/api/posts/comment-post/${post._id}`, {
 					method: "POST",
@@ -89,7 +90,7 @@ const Post = ({ post }) => {
 				}
 				return data;
 			} catch (error) {
-				console.log(error);
+				
 				throw error;
 			}
 		},
@@ -248,7 +249,7 @@ const Post = ({ post }) => {
 										isLiked ? "text-pink-500" : "text-slate-500"
 									}`}
 								>
-									{console.log("post likes",post.likes)}
+									
 									{post.likes.length}
 								</span>
 							</div>

@@ -31,7 +31,7 @@ const Posts = ({feedType, username, userId}) => {
 			try {
 				const res = await fetch(POST_ENDPOINT);
 				const data = await res.json();
-				console.log(data);
+				
 				return data;
 			} catch (error) {
 				throw error;

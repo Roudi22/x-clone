@@ -25,10 +25,10 @@ const CreatePost = () => {
 					if (!res.ok) {
 						throw new Error(data.message);
 					}
-					console.log(data);
+					
 					return data;
 			} catch (error) {
-				console.log(error);
+				
 				throw new Error(error);
 				
 			}

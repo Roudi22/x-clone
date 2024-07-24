@@ -4,3 +4,4 @@ const XSvg = (props) => (
 	</svg>
 );
 export default XSvg;
+

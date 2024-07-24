@@ -22,7 +22,7 @@ const {data:authUser, isLoading} = useQuery({
       if (data.error) {
         return null
       }
-      console.log(data);
+      
       return data;
     } catch (error) {
       throw error;

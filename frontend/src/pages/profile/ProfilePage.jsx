@@ -37,7 +37,7 @@ const ProfilePage = () => {
 				if (!res.ok) {
 					throw new Error(data.error || "Something went wrong");
 				}
-				console.log("data",data._id);
+				
 				return data;
 			} catch (error) {
 				throw new Error(error.message);

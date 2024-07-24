@@ -24,7 +24,6 @@ export const createPost = async (req, res) => {
       .status(201)
       .json({ message: "Post created successfully", post: newPost });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -49,7 +48,7 @@ export const deletePost = async (req, res) => {
     await Post.findByIdAndDelete(id);
     res.json({ message: "Post deleted successfully" });
   } catch (error) {
-    console.log(error);
+    
     res.status(500).json({ message: "Internal server error", error });
   }
 };
@@ -75,7 +74,7 @@ export const commentOnPost = async (req, res) => {
     await post.save();
     res.json({ message: "Comment added successfully", post });
   } catch (error) {
-    console.log(error);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -117,7 +116,7 @@ export const likeUnlikePost = async (req, res) => {
       res.status(200).json(updatedLikes);
     }
   } catch (error) {
-    console.log(error);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -139,7 +138,7 @@ export const getPosts = async (req, res) => {
     }
     res.json(posts);
   } catch (error) {
-    console.log(error);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -159,7 +158,7 @@ export const getLikedPosts = async (req, res) => {
     }
     res.status(200).json( likedPosts );
   } catch (error) {
-    console.log(error);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -176,13 +175,13 @@ export const getFollowingPosts = async (req, res) => {
       .populate({ path: "user", select: "-password" })
       .populate({ path: "comments.user", select: "-password" });
     if (posts.length === 0) {
-      console.log(posts);
+      
       return res.status(200).json({posts: []});
     }
     
     res.status(200).json( posts );
   } catch (error) {
-    console.log(error);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -203,7 +202,7 @@ export const getUserPosts = async (req, res) => {
     }
     res.status(200).json( userPosts );
   } catch (error) {
-    console.log(error);
+    
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
